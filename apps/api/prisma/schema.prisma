@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  passwordHash   String
+  displayName    String
+  avatarUrl      String?
+  bio            String?   @db.Text
+  role           Role      @default(USER)
+  emailVerified  Boolean   @default(false)
+  isBanned       Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  refreshTokens  RefreshToken[]
+  posts          Post[]
+  comments       Comment[]
+  postLikes      PostLike[]
+  commentLikes   CommentLike[]
+  reportsMade    Report[]  @relation("Reporter")
+  reportsHandled Report[]  @relation("Moderator")
+
+  @@index([email])
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  title     String
+  content   String   @db.Text
+  imageUrl  String?
+  tags      String[]
+  isHidden  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  comments  Comment[]
+  likes     PostLike[]
+
+  @@index([authorId])
+  @@index([createdAt])
+  @@index([tags])
+}
+
+model PostLike {
+  userId       String
+  postId       String
+  post         Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  @@id([userId, postId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content   String   @db.Text
+  isHidden  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  likes     CommentLike[]
+
+  @@index([postId])
+  @@index([authorId])
+}
+
+model CommentLike {
+  userId   String
+  commentId String
+  comment  Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  @@id([userId, commentId])
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  reporterId  String
+  reporter    User     @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  moderatorId String?
+  moderator   User?    @relation("Moderator", fields: [moderatorId], references: [id], onDelete: SetNull)
+  targetType  String   // 'POST' | 'COMMENT' | 'USER'
+  targetId    String
+  reason      String
+  status      String   @default("PENDING") // PENDING | RESOLVED | DISMISSED
+  createdAt   DateTime @default(now())
+  resolvedAt  DateTime?
+
+  @@index([status])
+  @@index([targetType, targetId])
+}

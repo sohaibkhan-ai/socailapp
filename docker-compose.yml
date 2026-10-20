@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: socialhub
+      POSTGRES_PASSWORD: socialhub
+      POSTGRES_DB: socialhub
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U socialhub"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  api:
+    build: ./apps/api
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: ./apps/api/.env
+    environment:
+      DATABASE_URL: postgresql://socialhub:socialhub@db:5432/socialhub?schema=public
+    ports:
+      - "3000:3000"
+volumes:
+  pgdata:

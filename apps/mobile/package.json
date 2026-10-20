@@ -1,0 +1,41 @@
+{
+  "name": "@socialhub/mobile",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "test": "jest --passWithNoTests"
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^15.0.2",
+    "@hookform/resolvers": "^3.9.1",
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-navigation/bottom-tabs": "^6.6.1",
+    "@react-navigation/native": "^6.1.18",
+    "@react-navigation/native-stack": "^6.11.0",
+    "@tanstack/react-query": "^5.62.0",
+    "axios": "^1.7.9",
+    "expo": "^57.0.30",
+    "expo-image-picker": "~57.0.20",
+    "expo-secure-store": "~57.0.4",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-hook-form": "^7.54.1",
+    "react-native": "0.86.3",
+    "react-native-gesture-handler": "~2.32.0",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.0",
+    "zod": "^3.24.1",
+    "zustand": "^4.5.5"
+  },
+  "devDependencies": {
+    "@testing-library/react-native": "^14.1.0",
+    "babel-plugin-module-resolver": "^5.0.2",
+    "babel-preset-expo": "~57.0.0",
+    "expo-modules-core": "^58.0.23",
+    "jest": "^29.7.0",
+    "jest-expo": "~57.0.6",
+    "react-test-renderer": "^19.2.3"
+  }
+}

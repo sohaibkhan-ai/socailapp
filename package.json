@@ -1,0 +1,23 @@
+{
+  "name": "socialhub",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "api": "npm run start:dev --workspace apps/api",
+    "start": "npm run start --workspace apps/api",
+    "start:dev": "npm run start:dev --workspace apps/api",
+    "mobile": "npm run start --workspace apps/mobile",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "react": "^19.2.3",
+    "react-native": "^0.86.3"
+  }
+}

@@ -1,0 +1,257 @@
+FAIL test/api.e2e-spec.js
+  health
+    ✓ GET /health returns ok with envelope (37 ms)
+  auth flow
+    ✕ register -> login -> me -> refresh -> logout -> refresh after logout fails (22 ms)
+    ✓ register validation failures: short password, bad email -> 400 (9 ms)
+    ✕ duplicate email -> 409 CONFLICT (4 ms)
+    ✕ login wrong password -> 401 envelope (5 ms)
+    ✕ forgot-password always 200; reset with invalid token -> 401 (16 ms)
+    ✓ unauthorized access -> 401 envelope (4 ms)
+  posts CRUD, pagination, search, ownership
+    ✕ create/read/update/delete lifecycle (1 ms)
+    ✕ validation: title too short, too many tags -> 400 (1 ms)
+    ✕ pagination, search, tag filter, sort
+  likes and comments
+    ✕ like toggle is idempotent (double like = one like)
+    ✕ comments CRUD + likes
+  moderation
+    ✕ user reports post; admin resolves -> post hidden; non-admin 403
+    ✕ moderation reports list and ban are mod/admin only
+  users / avatar
+    ✕ PATCH /users/me updates profile (1 ms)
+    ✕ avatar: wrong mime rejected (1 ms)
+    ✕ avatar: fake png (bad magic bytes) rejected
+    ✕ avatar: real png accepted
+
+  ● auth flow › register -> login -> me -> refresh -> logout -> refresh after logout fails
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 201
+    Received: 400
+
+      45 |   test('register -> login -> me -> refresh -> logout -> refresh after logout fails', async () => {
+      46 |     const reg = await register(email);
+    > 47 |     expect(reg.status).toBe(201);
+         |                        ^
+      48 |     expect(reg.body.success).toBe(true);
+      49 |     expect(reg.body.data.user.passwordHash).toBeUndefined();
+      50 |     tokens = reg.body.data;
+
+      at Object.toBe (test/api.e2e-spec.js:47:24)
+
+  ● auth flow › duplicate email -> 409 CONFLICT
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 409
+    Received: 400
+
+      86 |   test('duplicate email -> 409 CONFLICT', async () => {
+      87 |     const dup = await register('flow@example.com');
+    > 88 |     expect(dup.status).toBe(409);
+         |                        ^
+      89 |     expect(dup.body.error.code).toBe('CONFLICT');
+      90 |   });
+      91 |
+
+      at Object.toBe (test/api.e2e-spec.js:88:24)
+
+  ● auth flow › login wrong password -> 401 envelope
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 401
+    Received: 400
+
+      92 |   test('login wrong password -> 401 envelope', async () => {
+      93 |     const res = await login('flow@example.com', 'WrongPass1');
+    > 94 |     expect(res.status).toBe(401);
+         |                        ^
+      95 |     expect(res.body.success).toBe(false);
+      96 |     expect(res.body.error.code).toBe('UNAUTHORIZED');
+      97 |   });
+
+      at Object.toBe (test/api.e2e-spec.js:94:24)
+
+  ● auth flow › forgot-password always 200; reset with invalid token -> 401
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 401
+    Received: 400
+
+      106 |     const bad = await request(app.getHttpServer())
+      107 |       .post('/api/v1/auth/reset-password').send({ token: 'x'.repeat(64), newPassword: 'NewPass123' });
+    > 108 |     expect(bad.status).toBe(401);
+          |                        ^
+      109 |   });
+      110 |
+      111 |   test('unauthorized access -> 401 envelope', async () => {
+
+      at Object.toBe (test/api.e2e-spec.js:108:24)
+
+  ● posts CRUD, pagination, search, ownership › create/read/update/delete lifecycle
+
+    TypeError: Cannot read properties of undefined (reading 'accessToken')
+
+      132 |     const created = await request(app.getHttpServer())
+      133 |       .post('/api/v1/posts')
+    > 134 |       .set('Authorization', `Bearer ${alice.accessToken}`)
+          |                                             ^
+      135 |       .send({ title: 'Hello World', content: 'First post body', tags: ['Testing', 'DEV'] });
+      136 |     expect(created.status).toBe(201);
+      137 |     expect(created.body.data.tags).toEqual(['testing', 'dev']);
+
+      at Object.accessToken (test/api.e2e-spec.js:134:45)
+
+  ● posts CRUD, pagination, search, ownership › validation: title too short, too many tags -> 400
+
+    TypeError: Cannot read properties of undefined (reading 'accessToken')
+
+      172 |     const bad = await request(app.getHttpServer())
+      173 |       .post('/api/v1/posts')
+    > 174 |       .set('Authorization', `Bearer ${alice.accessToken}`)
+          |                                             ^
+      175 |       .send({ title: 'ab', content: 'x' });
+      176 |     expect(bad.status).toBe(400);
+      177 |     const manyTags = await request(app.getHttpServer())
+
+      at Object.accessToken (test/api.e2e-spec.js:174:45)
+
+  ● posts CRUD, pagination, search, ownership › pagination, search, tag filter, sort
+
+    TypeError: Cannot read properties of undefined (reading 'accessToken')
+
+      185 |     const mk = (title, tags) => request(app.getHttpServer())
+      186 |       .post('/api/v1/posts')
+    > 187 |       .set('Authorization', `Bearer ${alice.accessToken}`)
+          |                                             ^
+      188 |       .send({ title, content: `body of ${title}`, tags });
+      189 |     await mk('Alpha Post One', ['news']);
+      190 |     await mk('Beta Post Two', ['tech']);
+
+      at accessToken (test/api.e2e-spec.js:187:45)
+      at Object.mk (test/api.e2e-spec.js:189:11)
+
+  ● likes and comments › like toggle is idempotent (double like = one like)
+
+    TypeError: Cannot read properties of undefined (reading 'accessToken')
+
+      220 |     const created = await request(app.getHttpServer())
+      221 |       .post('/api/v1/posts')
+    > 222 |       .set('Authorization', `Bearer ${alice.accessToken}`)
+          |                                             ^
+      223 |       .send({ title: 'Like Target', content: 'like me', tags: ['fun'] });
+      224 |     post = created.body.data;
+      225 |   });
+
+      at Object.accessToken (test/api.e2e-spec.js:222:45)
+
+  ● likes and comments › comments CRUD + likes
+
+    TypeError: Cannot read properties of undefined (reading 'accessToken')
+
+      220 |     const created = await request(app.getHttpServer())
+      221 |       .post('/api/v1/posts')
+    > 222 |       .set('Authorization', `Bearer ${alice.accessToken}`)
+          |                                             ^
+      223 |       .send({ title: 'Like Target', content: 'like me', tags: ['fun'] });
+      224 |     post = created.body.data;
+      225 |   });
+
+      at Object.accessToken (test/api.e2e-spec.js:222:45)
+
+  ● moderation › user reports post; admin resolves -> post hidden; non-admin 403
+
+    TypeError: Cannot read properties of undefined (reading 'accessToken')
+
+      279 |     const created = await request(app.getHttpServer())
+      280 |       .post('/api/v1/posts')
+    > 281 |       .set('Authorization', `Bearer ${alice.accessToken}`)
+          |                                             ^
+      282 |       .send({ title: 'Reportable Post', content: 'questionable', tags: [] });
+      283 |     post = created.body.data;
+      284 |   });
+
+      at Object.accessToken (test/api.e2e-spec.js:281:45)
+
+  ● moderation › moderation reports list and ban are mod/admin only
+
+    TypeError: Cannot read properties of undefined (reading 'accessToken')
+
+      279 |     const created = await request(app.getHttpServer())
+      280 |       .post('/api/v1/posts')
+    > 281 |       .set('Authorization', `Bearer ${alice.accessToken}`)
+          |                                             ^
+      282 |       .send({ title: 'Reportable Post', content: 'questionable', tags: [] });
+      283 |     post = created.body.data;
+      284 |   });
+
+      at Object.accessToken (test/api.e2e-spec.js:281:45)
+
+  ● users / avatar › PATCH /users/me updates profile
+
+    TypeError: Cannot read properties of undefined (reading 'accessToken')
+
+      342 |     const res = await request(app.getHttpServer())
+      343 |       .patch('/api/v1/users/me')
+    > 344 |       .set('Authorization', `Bearer ${alice.accessToken}`)
+          |                                             ^
+      345 |       .send({ displayName: 'Alice Updated', bio: 'hello bio' });
+      346 |     expect(res.status).toBe(200);
+      347 |     expect(res.body.data.displayName).toBe('Alice Updated');
+
+      at Object.accessToken (test/api.e2e-spec.js:344:45)
+
+  ● users / avatar › avatar: wrong mime rejected
+
+    TypeError: Cannot read properties of undefined (reading 'accessToken')
+
+      351 |     const res = await request(app.getHttpServer())
+      352 |       .post('/api/v1/users/me/avatar')
+    > 353 |       .set('Authorization', `Bearer ${alice.accessToken}`)
+          |                                             ^
+      354 |       .attach('file', Buffer.from('<svg>not an image</svg>'), { filename: 'evil.svg', contentType: 'image/svg+xml' });
+      355 |     expect([400, 413, 415]).toContain(res.status);
+      356 |     expect(res.body.success).toBe(false);
+
+      at Object.accessToken (test/api.e2e-spec.js:353:45)
+
+  ● users / avatar › avatar: fake png (bad magic bytes) rejected
+
+    TypeError: Cannot read properties of undefined (reading 'accessToken')
+
+      360 |     const res = await request(app.getHttpServer())
+      361 |       .post('/api/v1/users/me/avatar')
+    > 362 |       .set('Authorization', `Bearer ${alice.accessToken}`)
+          |                                             ^
+      363 |       .attach('file', Buffer.from('definitely-not-a-png'), { filename: 'fake.png', contentType: 'image/png' });
+      364 |     expect([400, 415]).toContain(res.status);
+      365 |   });
+
+      at Object.accessToken (test/api.e2e-spec.js:362:45)
+
+  ● users / avatar › avatar: real png accepted
+
+    TypeError: Cannot read properties of undefined (reading 'accessToken')
+
+      372 |     const res = await request(app.getHttpServer())
+      373 |       .post('/api/v1/users/me/avatar')
+    > 374 |       .set('Authorization', `Bearer ${alice.accessToken}`)
+          |                                             ^
+      375 |       .attach('file', png, { filename: 'a.png', contentType: 'image/png' });
+      376 |     expect(res.status).toBe(201);
+      377 |     expect(res.body.data.avatarUrl).toMatch(/^\/static\//);
+
+      at Object.accessToken (test/api.e2e-spec.js:374:45)
+
+Test Suites: 1 failed, 1 total
+Tests:       15 failed, 3 passed, 18 total
+Snapshots:   0 total
+Time:        1.873 s, estimated 2 s
+Ran all test suites matching /test\/api.e2e-spec.js/i.
+Jest did not exit one second after the test run has completed.
+
+'This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with `--detectOpenHandles` to troubleshoot this issue.

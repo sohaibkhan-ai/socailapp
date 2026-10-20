@@ -1,0 +1,13 @@
+appId: dev.socialhub.app
+---
+- launchApp
+- assertVisible: "Welcome"
+- tapOn: "Log in"
+- inputText:
+    field: "Email"
+    text: "demo@socialhub.dev"
+- inputText:
+    field: "Password"
+    text: "Demo123!"
+- tapOn: "Log In"
+- assertVisible: "Feed"

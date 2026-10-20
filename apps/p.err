@@ -1,0 +1,20 @@
+[31m[Nest] 81792  - [39m10/19/2026, 1:54:29 PM [31m  ERROR[39m [38;5;3m[ExceptionHandler] [39m[31mmetatype is not a constructor[39m
+TypeError: metatype is not a constructor
+    at Injector.instantiateClass (/Users/bb/Applications/socialhub/node_modules/@nestjs/core/injector/injector.js:373:19)
+    at Injector.inj.Injector.instantiateClass (/private/var/folders/r6/k8s8bcl91bs801qjm8zhlv780000gn/T/pixis/probe2.js:7:21)
+    at callback (/Users/bb/Applications/socialhub/node_modules/@nestjs/core/injector/injector.js:65:45)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at Injector.resolveConstructorParams (/Users/bb/Applications/socialhub/node_modules/@nestjs/core/injector/injector.js:145:24)
+    at Injector.loadInstance (/Users/bb/Applications/socialhub/node_modules/@nestjs/core/injector/injector.js:70:13)
+    at Injector.loadInjectable (/Users/bb/Applications/socialhub/node_modules/@nestjs/core/injector/injector.js:94:9)
+    at /Users/bb/Applications/socialhub/node_modules/@nestjs/core/injector/instance-loader.js:80:13
+    at async Promise.all (index 1)
+    at InstanceLoader.createInstancesOfInjectables (/Users/bb/Applications/socialhub/node_modules/@nestjs/core/injector/instance-loader.js:79:9)
+    at /Users/bb/Applications/socialhub/node_modules/@nestjs/core/injector/instance-loader.js:41:13
+    at async Promise.all (index 9)
+    at InstanceLoader.createInstances (/Users/bb/Applications/socialhub/node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+    at InstanceLoader.createInstancesOfDependencies (/Users/bb/Applications/socialhub/node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+    at /Users/bb/Applications/socialhub/node_modules/@nestjs/core/nest-factory.js:108:17
+    at ExceptionsZone.asyncRun (/Users/bb/Applications/socialhub/node_modules/@nestjs/core/errors/exceptions-zone.js:22:13)
+    at NestFactoryStatic.initialize (/Users/bb/Applications/socialhub/node_modules/@nestjs/core/nest-factory.js:106:13)
+    at NestFactoryStatic.create (/Users/bb/Applications/socialhub/node_modules/@nestjs/core/nest-factory.js:42:9)

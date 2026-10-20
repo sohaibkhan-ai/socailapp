@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "name": "SocialHub",
+    "slug": "socialhub",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "plugins": [
+      "expo-secure-store",
+      "expo-status-bar"
+    ]
+  }
+}
