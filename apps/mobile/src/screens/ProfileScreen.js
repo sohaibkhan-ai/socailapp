@@ -47,6 +47,7 @@ export default function ProfileScreen({ navigation }) {
       <FlatList
         data={posts}
         keyExtractor={(item, i) => String(item.id ?? i)}
+        showsVerticalScrollIndicator={false}
         onRefresh={refetch}
         refreshing={false}
         ListHeaderComponent={
