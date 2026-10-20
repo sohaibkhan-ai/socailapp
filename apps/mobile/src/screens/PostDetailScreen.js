@@ -100,7 +100,7 @@ export default function PostDetailScreen({ navigation, route }) {
               </View>
             ) : null}
             <View style={styles.actions}>
-              <TouchableOpacity accessibilityRole="button" accessibilityLabel={post.likedByMe ? 'Unlike' : 'Like'} onPress={() => like.mutate(post.likedByMe)} style={styles.actionBtn}>
+              <TouchableOpacity accessibilityRole="button" accessibilityLabel={post.likedByMe ? 'Unlike' : 'Like'} onPress={() => like.mutate({ postId, currentlyLiked: post.likedByMe })} style={styles.actionBtn}>
                 <Ionicons name={post.likedByMe ? 'heart' : 'heart-outline'} size={22} color={post.likedByMe ? t.colors.error : t.colors.textMuted} />
                 <Text style={{ color: post.likedByMe ? t.colors.error : t.colors.textMuted, marginLeft: 6, fontWeight: '600' }}>{post.likeCount ?? 0}</Text>
               </TouchableOpacity>

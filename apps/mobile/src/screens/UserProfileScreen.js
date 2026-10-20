@@ -53,7 +53,7 @@ export default function UserProfileScreen({ navigation, route }) {
             </Card>
           </View>
         }
-        renderItem={({ item }) => <PostCard post={item} onPress={() => navigation.navigate('PostDetail', { postId: item.id })} onLike={() => like.mutate(item.id, item.likedByMe)} />}
+        renderItem={({ item }) => <PostCard post={item} onPress={() => navigation.navigate('PostDetail', { postId: item.id })} onLike={() => like.mutate({ postId: item.id, currentlyLiked: item.likedByMe })} />}
         ListEmptyComponent={isLoading ? <Spinner /> : <EmptyState icon="newspaper-outline" title="No posts yet" />}
         contentContainerStyle={{ paddingBottom: 24 }}
       />

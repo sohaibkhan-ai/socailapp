@@ -66,27 +66,33 @@ export function useToggleLike(postId) {
   const qc = useQueryClient();
   const user = useAuthStore((s) => s.user);
   return useMutation({
-    mutationFn: async (currentlyLiked) => {
-      if (currentlyLiked) return unwrap(await api.delete(`/posts/${postId}/like`));
-      return unwrap(await api.post(`/posts/${postId}/like`));
+    // Accept the post id either from the hook argument (detail screens) or
+    // from mutate() variables (list screens that share one hook instance).
+    mutationFn: async ({ postId: pid = postId, currentlyLiked }) => {
+      if (!pid) throw new Error('Missing post id for like');
+      if (currentlyLiked) return unwrap(await api.delete(`/posts/${pid}/like`));
+      return unwrap(await api.post(`/posts/${pid}/like`));
     },
-    onMutate: async () => {
-      await qc.cancelQueries({ queryKey: ['post', postId] });
-      const prev = qc.getQueryData(['post', postId]);
+    onMutate: async ({ postId: pid = postId }) => {
+      if (!pid) return {};
+      await qc.cancelQueries({ queryKey: ['post', pid] });
+      const prev = qc.getQueryData(['post', pid]);
       if (prev) {
-        qc.setQueryData(['post', postId], {
+        qc.setQueryData(['post', pid], {
           ...prev,
           likedByMe: !prev.likedByMe,
           likeCount: (prev.likeCount || 0) + (prev.likedByMe ? -1 : 1),
         });
       }
-      return { prev };
+      return { prev, pid };
     },
     onError: (_e, _v, ctx) => {
-      if (ctx?.prev) qc.setQueryData(['post', postId], ctx.prev);
+      if (ctx?.prev) qc.setQueryData(['post', ctx.pid], ctx.prev);
     },
-    onSettled: () => {
-      qc.invalidateQueries({ queryKey: ['post', postId] });
+    onSettled: (_d, _e, vars) => {
+      const pid = vars?.postId || postId;
+      if (!pid) return;
+      qc.invalidateQueries({ queryKey: ['post', pid] });
       qc.invalidateQueries({ queryKey: ['posts'] });
     },
   });

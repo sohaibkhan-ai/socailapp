@@ -39,7 +39,7 @@ export default function SearchScreen({ navigation }) {
           data={posts}
           keyExtractor={(item, i) => String(item.id ?? i)}
           renderItem={({ item }) => (
-            <PostCard post={item} onPress={() => navigation.navigate('PostDetail', { postId: item.id })} onLike={() => like.mutate(item.id, item.likedByMe)} />
+            <PostCard post={item} onPress={() => navigation.navigate('PostDetail', { postId: item.id })} onLike={() => like.mutate({ postId: item.id, currentlyLiked: item.likedByMe })} />
           )}
           refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} tintColor={t.colors.primary} />}
           onEndReached={() => hasNextPage && !isFetchingNextPage && fetchNextPage()}

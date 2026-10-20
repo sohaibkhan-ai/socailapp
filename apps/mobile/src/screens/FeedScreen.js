@@ -29,7 +29,7 @@ export default function FeedScreen({ navigation }) {
           <PostCard
             post={item}
             onPress={() => navigation.navigate('PostDetail', { postId: item.id })}
-            onLike={() => like.mutate(item.id, item.likedByMe)}
+            onLike={() => like.mutate({ postId: item.id, currentlyLiked: item.likedByMe })}
           />
         )}
         refreshControl={<Refresh refreshing={isRefetching} onRefresh={refetch} color={t.colors.primary} />}

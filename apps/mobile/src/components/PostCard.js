@@ -56,8 +56,16 @@ export default function PostCard({ post, onPress, onLike, onLongPress }) {
           <Text style={[styles.count, { color: liked ? t.colors.error : t.colors.textMuted }]}>{post.likeCount ?? 0}</Text>
         </TouchableOpacity>
         <View style={styles.likeBtn}>
-          <Ionicons name="chatbubble-outline" size={20} color={t.colors.textMuted} />
-          <Text style={[styles.count, { color: t.colors.textMuted }]}>{post.commentsCount ?? post.commentCount ?? 0}</Text>
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel="View comments"
+            onPress={onPress}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 44 }}
+          >
+            <Ionicons name="chatbubble-outline" size={20} color={t.colors.textMuted} />
+            <Text style={[styles.count, { color: t.colors.textMuted }]}>{post.commentsCount ?? post.commentCount ?? 0}</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </Card>
