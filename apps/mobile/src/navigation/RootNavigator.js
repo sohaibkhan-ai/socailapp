@@ -53,25 +53,24 @@ function MainTabs() {
         tabBarStyle: {
           backgroundColor: t.colors.surface,
           borderTopColor: t.colors.border,
-          // Keep the bar readable without letting it grow excessively on
-          // small devices; React Navigation still applies the safe-area inset.
-          height: 60,
-          paddingTop: 6,
+          // No fixed height: React Navigation sizes the bar from its content
+          // plus the safe-area inset, which prevents icon/label clipping on
+          // notched devices and small phones.
         },
         tabBarIcon: ({ focused, color }) => TabIcon(route.name, focused, color),
         tabBarLabelStyle: { fontSize: 10, fontWeight: '600', letterSpacing: 0.2 },
         tabBarHideOnKeyboard: true,
       })}
     >
-      <Tabs.Screen name="Feed" component={FeedScreen} />
-      <Tabs.Screen name="Search" component={SearchScreen} />
+      <Tabs.Screen name="Feed" component={FeedScreen} options={{ tabBarLabel: 'Feed' }} />
+      <Tabs.Screen name="Search" component={SearchScreen} options={{ tabBarLabel: 'Search' }} />
       <Tabs.Screen
         name="New Post"
         component={CreatePostScreen}
-        options={{ presentation: 'modal' }}
+        options={{ presentation: 'modal', tabBarLabel: 'Post' }}
       />
-      {isMod ? <Tabs.Screen name="Reports" component={AdminReportsScreen} /> : null}
-      <Tabs.Screen name="Profile" component={ProfileScreen} />
+      {isMod ? <Tabs.Screen name="Reports" component={AdminReportsScreen} options={{ tabBarLabel: 'Reports' }} /> : null}
+      <Tabs.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: 'Profile' }} />
     </Tabs.Navigator>
   );
 }
