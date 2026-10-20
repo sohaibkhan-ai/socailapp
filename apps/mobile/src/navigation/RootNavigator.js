@@ -50,9 +50,17 @@ function MainTabs() {
         headerShown: false,
         tabBarActiveTintColor: t.colors.primary,
         tabBarInactiveTintColor: t.colors.textMuted,
-        tabBarStyle: { backgroundColor: t.colors.surface, borderTopColor: t.colors.border },
+        tabBarStyle: {
+          backgroundColor: t.colors.surface,
+          borderTopColor: t.colors.border,
+          // Keep the bar readable without letting it grow excessively on
+          // small devices; React Navigation still applies the safe-area inset.
+          height: 60,
+          paddingTop: 6,
+        },
         tabBarIcon: ({ focused, color }) => TabIcon(route.name, focused, color),
-        tabBarLabelStyle: { fontSize: 11 },
+        tabBarLabelStyle: { fontSize: 10, fontWeight: '600', letterSpacing: 0.2 },
+        tabBarHideOnKeyboard: true,
       })}
     >
       <Tabs.Screen name="Feed" component={FeedScreen} />

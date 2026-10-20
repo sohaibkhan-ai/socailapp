@@ -7,10 +7,21 @@ import Card from './Card';
 import Chip from './Chip';
 import { typography } from '@/theme';
 
+// Human-friendly relative timestamps: "just now", "5m", "3h", "2d", else a date.
+function timeAgo(iso) {
+  const then = new Date(iso).getTime();
+  if (!iso || Number.isNaN(then)) return '';
+  const diff = Date.now() - then;
+  if (diff < 60_000) return 'just now';
+  if (diff < 3_600_000) return `${Math.floor(diff / 60_000)}m ago`;
+  if (diff < 86_400_000) return `${Math.floor(diff / 3_600_000)}h ago`;
+  if (diff < 7 * 86_400_000) return `${Math.floor(diff / 86_400_000)}d ago`;
+  return new Date(iso).toLocaleDateString();
+}
+
 export default function PostCard({ post, onPress, onLike, onLongPress }) {
   const t = useTheme();
-  const liked = !!post.likedByMe;
-  return (
+  const liked = !!post.likedByMe;  return (
     <Card>
       <TouchableOpacity accessibilityRole="button" accessibilityLabel={`Open post ${post.title}`} onPress={onPress} onLongPress={onLongPress} activeOpacity={0.7}>
         <View style={styles.header}>
@@ -18,7 +29,7 @@ export default function PostCard({ post, onPress, onLike, onLongPress }) {
           <View style={{ flex: 1, marginLeft: 10 }}>
             <Text style={[styles.author, { color: t.colors.text }]} numberOfLines={1} ellipsizeMode="tail">{post.author?.displayName || 'Unknown'}</Text>
             <Text style={[styles.time, { color: t.colors.textMuted }]} numberOfLines={1}>
-              {post.createdAt && !Number.isNaN(new Date(post.createdAt).getTime()) ? new Date(post.createdAt).toLocaleDateString() : ''}
+              {timeAgo(post.createdAt)}
             </Text>
           </View>
         </View>
