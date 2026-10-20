@@ -16,6 +16,11 @@ async function bootstrap() {
   app.use(helmet());
   app.use(cookieParser());
   app.use(express.json({ limit: '1mb' }));
+  // Serve uploaded media (avatars) at /static — the users controller stores
+  // files in UPLOAD_DIR and returns "/static/<file>" URLs.
+  const uploadDir = process.env.UPLOAD_DIR || 'uploads';
+  require('fs').mkdirSync(uploadDir, { recursive: true });
+  app.use('/static', express.static(require('path').resolve(uploadDir)));
   app.enableCors({
     origin: cfg.corsOrigins,
     credentials: true,

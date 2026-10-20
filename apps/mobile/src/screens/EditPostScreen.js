@@ -45,7 +45,7 @@ export default function EditPostScreen({ navigation, route }) {
   };
 
   return (
-    <Screen keyboard contentStyle={{ padding: 20 }}>
+    <Screen keyboard contentStyle={{ paddingTop: 12 }}>
       <Text style={[styles.title, { color: t.colors.text }]}>Edit post</Text>
       <Controller control={control} name="title" render={({ field: { onChange, value } }) => <TextField label="Title" value={value} onChangeText={onChange} error={errors.title?.message} />} />
       <Controller control={control} name="content" render={({ field: { onChange, value } }) => <TextField label="Content" value={value} onChangeText={onChange} error={errors.content?.message} multiline style={{ minHeight: 140, textAlignVertical: 'top' }} />} />

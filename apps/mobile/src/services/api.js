@@ -35,6 +35,15 @@ export function unwrap(response) {
   return body;
 }
 
+// The API returns media paths relative to its origin (e.g. "/static/x.jpg");
+// convert them to absolute URLs the phone can actually load.
+export function mediaUrl(path) {
+  if (!path || typeof path !== 'string') return null;
+  if (/^https?:\/\//.test(path)) return path;
+  const origin = API_BASE_URL.replace(/\/api\/v1\/?$/, '');
+  return `${origin}${path.startsWith('/') ? '' : '/'}${path}`;
+}
+
 api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().tokens?.accessToken;
   if (token) config.headers.Authorization = `Bearer ${token}`;

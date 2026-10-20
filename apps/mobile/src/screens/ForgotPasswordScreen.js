@@ -28,7 +28,7 @@ export default function ForgotPasswordScreen({ navigation }) {
   };
 
   return (
-    <Screen keyboard contentStyle={{ padding: 20 }}>
+    <Screen keyboard contentStyle={{ paddingTop: 12 }}>
       <Text style={[styles.title, { color: t.colors.text }]}>Forgot password</Text>
       <Text style={[styles.sub, { color: t.colors.textMuted }]}>Enter your email and we'll send a reset link.</Text>
       <TextField label="Email" value={watch('email')} onChangeText={(v) => setValue('email', v)} error={errors.email?.message} keyboardType="email-address" autoCapitalize="none" />

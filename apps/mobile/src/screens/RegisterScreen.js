@@ -34,7 +34,7 @@ export default function RegisterScreen({ navigation }) {
   };
 
   return (
-    <Screen scroll keyboard contentStyle={{ padding: 20 }}>
+    <Screen scroll keyboard contentStyle={{ paddingTop: 12 }}>
       <Text style={[styles.title, { color: t.colors.text }]}>Create account</Text>
       <Text style={[styles.sub, { color: t.colors.textMuted }]}>Join SocialHub today</Text>
       <TextField label="Display name" value={watch('displayName')} onChangeText={(v) => setValue('displayName', v)} error={errors.displayName?.message} placeholder="Jane Doe" autoCapitalize="words" />

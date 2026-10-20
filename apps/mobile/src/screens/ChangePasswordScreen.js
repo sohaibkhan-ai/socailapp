@@ -32,7 +32,7 @@ export default function ChangePasswordScreen({ navigation }) {
   };
 
   return (
-    <Screen keyboard contentStyle={{ padding: 20 }}>
+    <Screen keyboard contentStyle={{ paddingTop: 12 }}>
       <Text style={[styles.title, { color: t.colors.text }]}>Change password</Text>
       <TextField label="Current password" secure value={watch('currentPassword')} onChangeText={(v) => setValue('currentPassword', v)} error={errors.currentPassword?.message} />
       <TextField label="New password" secure value={watch('newPassword')} onChangeText={(v) => setValue('newPassword', v)} error={errors.newPassword?.message} placeholder="At least 8 characters" />

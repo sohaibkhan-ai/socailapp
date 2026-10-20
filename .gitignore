@@ -10,3 +10,4 @@ ios/Pods/
 android/.gradle/
 android/app/build/
 .DS_Store
+uploads/

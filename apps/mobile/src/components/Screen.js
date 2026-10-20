@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { ScrollView, View, RefreshControl, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { useTheme, useResponsive, MAX_CONTENT_WIDTH } from '@/theme';
 
 // Screen: the app's page container. Handles safe areas, keyboard avoidance,
@@ -10,7 +11,14 @@ export default function Screen({ children, scroll = false, refresh = null, refre
   const t = useTheme();
   const r = useResponsive();
   const insets = useSafeAreaInsets();
-  const pad = { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 16 };
+  // Inside a tab navigator the tab bar already covers the home-indicator
+  // inset; adding ours again leaves a dead band below the content. Only pad
+  // the bottom inset when there is no tab bar above us.
+  const tabHeight = useContext(BottomTabBarHeightContext) || 0;
+  const pad = {
+    paddingTop: insets.top + 8,
+    paddingBottom: tabHeight > 0 ? 12 : insets.bottom + 16,
+  };
   const isWide = r.isTablet || r.isLandscape;
   // Constrain content into a centered column on wide screens.
   const frame = isWide

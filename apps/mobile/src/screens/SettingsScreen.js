@@ -14,7 +14,7 @@ export default function SettingsScreen({ navigation }) {
   const setTheme = useSettingsStore((s) => s.setTheme);
 
   return (
-    <Screen contentStyle={{ paddingTop: 16, paddingHorizontal: 16 }}>
+    <Screen contentStyle={{ paddingTop: 8 }}>
       <Text style={[styles.title, { color: t.colors.text }]}>Settings</Text>
       <Text style={[styles.section, { color: t.colors.textMuted }]}>Appearance</Text>
       <View style={[styles.card, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>

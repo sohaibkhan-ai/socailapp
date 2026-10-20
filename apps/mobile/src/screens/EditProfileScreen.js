@@ -11,14 +11,14 @@ import Avatar from '@/components/Avatar';
 import { showToast } from '@/components/Toast';
 import { profileSchema } from '@/schemas';
 import { useAuthStore } from '@/store/authStore';
-import { api, unwrap, extractMessage } from '@/services/api';
+import { api, unwrap, extractMessage, mediaUrl } from '@/services/api';
 import { useTheme } from '@/theme';
 
 export default function EditProfileScreen({ navigation }) {
   const t = useTheme();
   const user = useAuthStore((s) => s.user);
   const updateUser = useAuthStore((s) => s.updateUser);
-  const [avatar, setAvatar] = React.useState(user?.avatarUrl || null);
+  const [avatar, setAvatar] = React.useState(mediaUrl(user?.avatarUrl));
   const [saving, setSaving] = React.useState(false);
   const { handleSubmit, setValue, watch, formState: { errors } } = useForm({
     resolver: zodResolver(profileSchema),
@@ -35,10 +35,11 @@ export default function EditProfileScreen({ navigation }) {
     try {
       await unwrap(api.patch('/users/me', values));
       await updateUser(values);
-      if (avatar && avatar !== user?.avatarUrl) {
+      if (avatar && avatar !== mediaUrl(user?.avatarUrl)) {
         const form = new FormData();
-        form.append('avatar', { uri: avatar, name: 'avatar.jpg', type: 'image/jpeg' });
-        await unwrap(api.post('/users/me/avatar', form, { headers: { 'Content-Type': 'multipart/form-data' } }));
+        form.append('file', { uri: avatar, name: 'avatar.jpg', type: 'image/jpeg' });
+        const res = await unwrap(api.post('/users/me/avatar', form, { headers: { 'Content-Type': 'multipart/form-data' } }));
+        await updateUser({ avatarUrl: res?.avatarUrl || user?.avatarUrl });
       }
       showToast('Profile updated', 'success');
       navigation.goBack();
@@ -50,7 +51,7 @@ export default function EditProfileScreen({ navigation }) {
   };
 
   return (
-    <Screen keyboard contentStyle={{ padding: 20 }}>
+    <Screen keyboard contentStyle={{ paddingTop: 12 }}>
       <Text style={[styles.title, { color: t.colors.text }]}>Edit profile</Text>
       <View style={{ alignItems: 'center', marginBottom: 20 }}>
         <TouchableOpacity accessibilityRole="button" accessibilityLabel="Change profile photo" onPress={pickImage}>

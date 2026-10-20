@@ -28,7 +28,7 @@ export default function ResetPasswordScreen({ navigation }) {
   };
 
   return (
-    <Screen keyboard contentStyle={{ padding: 20 }}>
+    <Screen keyboard contentStyle={{ paddingTop: 12 }}>
       <Text style={[styles.title, { color: t.colors.text }]}>Reset password</Text>
       <Text style={[styles.sub, { color: t.colors.textMuted }]}>Paste the token from your email and set a new password.</Text>
       <TextField label="Reset token" value={watch('token')} onChangeText={(v) => setValue('token', v)} error={errors.token?.message} autoCapitalize="none" />
